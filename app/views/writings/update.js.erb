@@ -1,1 +1,3 @@
 <%= render partial: "shared/show_message" %>
+
+$('#list ul #writing_<%= @writing.id %>').text("<%= @writing.title %>")

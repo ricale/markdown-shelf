@@ -10,6 +10,10 @@
 
 shelf = {} unless typeof shelf is typeof {}
 
+shelf.isChanged = false
+shelf.confirmMessageToNotSave = "저장되지 않았습니다. 계속 하시겠습니까?"
+shelf.confirmMessageWhenUnload = "저장되지 않은 데이터가 있습니다."
+
 shelf.resizeResponsive = ->
   $source = $("#source")
   $target = $("#target")
@@ -28,9 +32,19 @@ shelf.runHmd = ->
   hmd.run "#source", "#target"
 
 
+shelf.confirmToNotSave = (event) ->
+  if shelf.isChanged
+    return confirm(shelf.confirmMessageToNotSave)
+  else
+    return true
+
+
 
 shelf.newWriting = (event) ->
   event.preventDefault()
+
+  if !shelf.confirmToNotSave()
+    return false
 
   $("input[name='writing_id']").val("")
   $("#writing_title").text("New Document")
@@ -39,8 +53,28 @@ shelf.newWriting = (event) ->
   $("#target").text("")
   $("input[name='private']").val("true")
 
+  shelf.isChanged = false
+  $('#source').bind('input propertychange', shelf.onChangeSource)
+
+shelf.showWriting = (event) ->
+  if !shelf.confirmToNotSave()
+    return false
+
+  writingId = $(this).attr('id').slice(8)
+
+  $.ajax(
+    url: "/writings/" + writingId
+    type: "GET"
+    dataType: "script"
+  ).done ->
+    shelf.isChanged = false
+    $('#source').bind('input propertychange', shelf.onChangeSource)
+
 shelf.saveWriting = (event) ->
   event.preventDefault()
+
+  if !shelf.confirmToNotSave()
+    return false
 
   writingId  = $("input[name='writing_id']").val()
   title      = $("#writing_title").text()
@@ -74,7 +108,10 @@ shelf.saveWriting = (event) ->
     type: type
     data: data
     dataType: "script"
-  )
+  ).done ->
+    shelf.isChanged = false
+    $('#source').bind('input propertychange', shelf.onChangeSource)
+
 
 
 shelf.editTitleAndCategory = (event) ->
@@ -89,23 +126,33 @@ shelf.updateTitleAndCategory = (event) ->
   # $('#writing_title').title() $('#modal-basic input[name="category"]').val()
 
 
-$(document).ready ->
+
+shelf.onChangeSource = (event) ->
+  shelf.isChanged = true
+  $('#source').unbind('input propertychange', shelf.onChangeSource)
+
+
+
+shelf.onReadyDocument = ->
   shelf.runHmd()
   shelf.resizeResponsive()
+
   $('#new_writing_button').click(shelf.newWriting)
   $('#save_writing_button').click(shelf.saveWriting)
+  $('#list').on 'click', '.writing', shelf.showWriting
+
+  $('#source').bind('input propertychange', shelf.onChangeSource)
+
   $('#writing_title').click(shelf.editTitleAndCategory)
   $('#writing_category').click(shelf.editTitleAndCategory)
+
   $('#modal-basic #btn-done').click(shelf.updateTitleAndCategory)
 
-$(document).on 'page:load', ->
-  shelf.runHmd()
-  shelf.resizeResponsive()
-  $('#new_writing_button').click(shelf.newWriting)
-  $('#save_writing_button').click(shelf.saveWriting)
-  $('#writing_title').click(shelf.editTitleAndCategory)
-  $('#writing_category').click(shelf.editTitleAndCategory)
-  $('#modal-basic #btn-done').click(shelf.updateTitleAndCategory)
+$(document).ready shelf.onReadyDocument
+$(document).on 'page:load', shelf.onReadyDocument
 
 $(window).load(shelf.resizeResponsive)
          .resize(shelf.resizeResponsive)
+         .on 'beforeunload', (event) ->
+  if shelf.isChanged
+    return shelf.confirmMessageWhenUnload

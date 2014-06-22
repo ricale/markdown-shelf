@@ -47,3 +47,14 @@ html, body {
   border: 1px solid #000;
 }
 
+.writing {
+  cursor: pointer;
+}
+
+.writing:hover {
+  background-color: #DDD;
+}
+
+.active_writing {
+  background-color: #AFF
+}

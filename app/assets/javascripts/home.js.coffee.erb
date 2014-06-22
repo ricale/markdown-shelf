@@ -1,0 +1,111 @@
+# Place all the behaviors and hooks related to the matching controller here.
+# All this logic will automatically be available in application.js.
+# You can use CoffeeScript in this file: http://coffeescript.org/
+
+#= require application
+#= require hmd/hmd
+#= require hmd/hmd.ricaleinline
+
+<% environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
+
+shelf = {} unless typeof shelf is typeof {}
+
+shelf.resizeResponsive = ->
+  $source = $("#source")
+  $target = $("#target")
+  $list   = $("#list")
+
+  if $source.exists()
+    boxHeight = $(window).height() - $source.offset().top - 15
+    $source.css("height", boxHeight)
+    $target.css("height", boxHeight)
+    $list.css(  "height", boxHeight)
+
+  return
+
+
+shelf.runHmd = ->
+  hmd.run "#source", "#target"
+
+
+
+shelf.newWriting = (event) ->
+  event.preventDefault()
+
+  $("input[name='writing_id']").val("")
+  $("#writing_title").text("New Document")
+  $("input[name='category_id']").val("")
+  $("#source").val("")
+  $("#target").text("")
+  $("input[name='private']").val("true")
+
+shelf.saveWriting = (event) ->
+  event.preventDefault()
+
+  writingId  = $("input[name='writing_id']").val()
+  title      = $("#writing_title").text()
+  categoryId = $("input[name='category_id']").val()
+  content    = $("#source").val()
+  isPrivate  = $("input[name='private']").val()
+
+  if writingId == "0"
+    url = "<%= writings_path %>"
+    type = "POST"
+    data =
+      writing:
+        title: title
+        category_id: categoryId
+        content: content
+        private: isPrivate
+
+  else
+    url = "/writings/" + writingId
+    type = "PUT"
+    data =
+      writing:
+        id: writingId
+        title: title
+        category_id: categoryId
+        content: content
+        private: isPrivate
+
+  $.ajax(
+    url: url
+    type: type
+    data: data
+    dataType: "script"
+  )
+
+
+shelf.editTitleAndCategory = (event) ->
+  if $("input[name='writing_id'").val() != ""
+    $('#modal-basic .modal-title').text("Change Title and Category")
+    $('#modal-basic input[name="title"]').val($('#writing_title').text())
+    $('#modal-basic input[name="category"]').val()
+    $('#modal-basic').modal 'show'
+
+shelf.updateTitleAndCategory = (event) ->
+  $('#writing_title').text($('#modal-basic input[name="title"]').val())
+  # $('#writing_title').title() $('#modal-basic input[name="category"]').val()
+
+
+$(document).ready ->
+  shelf.runHmd()
+  shelf.resizeResponsive()
+  $('#new_writing_button').click(shelf.newWriting)
+  $('#save_writing_button').click(shelf.saveWriting)
+  $('#writing_title').click(shelf.editTitleAndCategory)
+  $('#writing_category').click(shelf.editTitleAndCategory)
+  $('#modal-basic #btn-done').click(shelf.updateTitleAndCategory)
+
+$(document).on 'page:load', ->
+  shelf.runHmd()
+  shelf.resizeResponsive()
+  $('#new_writing_button').click(shelf.newWriting)
+  $('#save_writing_button').click(shelf.saveWriting)
+  $('#writing_title').click(shelf.editTitleAndCategory)
+  $('#writing_category').click(shelf.editTitleAndCategory)
+  $('#modal-basic #btn-done').click(shelf.updateTitleAndCategory)
+
+$(window).load(shelf.resizeResponsive)
+         .resize(shelf.resizeResponsive)

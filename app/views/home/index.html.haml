@@ -1,0 +1,21 @@
+.row
+  .header.col-sm-7
+    = render 'header'
+
+  #message.message.col-sm-3
+    = render partial: 'shared/message'
+
+  .menu.col-sm-2.text-right
+    = render 'data'
+    = render 'menu'
+
+.row
+  #sidebar.sidebar.col-sm-2
+    = render 'list'
+
+  .col-sm-5
+    %textarea#source.source.box
+  .col-sm-5
+    #target.target.box
+
+= render partial: 'shared/modal'

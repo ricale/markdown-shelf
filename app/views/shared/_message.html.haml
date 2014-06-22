@@ -1,0 +1,11 @@
+- unless flash[:info].nil?
+  .alert-custom.text-info.alert-floating
+    = flash[:info]
+
+- unless flash[:notice].nil?
+  .alert-custom.text-success.alert-floating
+    = flash[:notice]
+
+- unless flash[:alert].nil?
+  .alert-custom.text-danger.alert-floating
+    = flash[:alert]

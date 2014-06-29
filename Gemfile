@@ -17,6 +17,8 @@ gem 'bootstrap-sass', '~> 3.1.1'
 
 gem 'devise'
 
+gem 'passenger', '~> 4.0.37'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
@@ -28,6 +30,10 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'capybara'
   gem 'annotate'
+end
+
+group :development do
+  gem 'capistrano', '~> 3.0', require: false
 end
 
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes

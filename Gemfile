@@ -33,7 +33,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'capistrano', '~> 3.0', require: false
+  gem 'capistrano', '~> 3.2', require: false
 end
 
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes

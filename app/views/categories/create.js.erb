@@ -1,4 +1,9 @@
 <%= render partial: "shared/show_message" %>
 
-$('#list .category').last().after("<%=j render @category %>")
+if($('#list .category').last().exists()) {
+  $('#list .category').last().after("<%=j render @category %>")
+} else {
+  $('#list ul').prepend("<%=j render @category %>")
+}
+
 $('#modal-new-category').modal('hide')

@@ -33,8 +33,6 @@ class CategoriesController < ApplicationController
       raise "This category has some writings"
     end
 
-    puts category.inspect
-
     @category_id = category.id
     category.destroy!
     flash[:notice] = "Category was successfully removed."

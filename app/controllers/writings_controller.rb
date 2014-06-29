@@ -36,6 +36,15 @@ class WritingsController < ApplicationController
   end
 
   def destroy
+    writing = Writing.find(params[:id])
+    is_own?(writing.user_id)
+
+    @writing_id = writing.id
+    writing.destroy!
+    flash[:notice] = "Writing was successfully removed."
+  rescue => e
+    flash[:alert] = e.to_s
+    render "shared/message"
   end
 
   private

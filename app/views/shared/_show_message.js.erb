@@ -1,15 +1,22 @@
-$('.modal-message').each(function() {
-  var $this = $(this)
-  if($this.css('display') != 'none') {
-    $this.html("<%=j render partial: 'shared/message' %>")
+(function() {
+  var alreadyShown = false
+  $('.modal-message').each(function() {
+    var $this = $(this)
+    if($this.is(':visible')) {
+      alreadyShown = true
+      $this.html("<%=j render partial: 'shared/message' %>")
+      setTimeout(function() {
+        $this.find('.alert-custom').fadeOut(5000)
+      }, 1000)
+    }
+  })
+
+
+  if(!alreadyShown) {
+    $('#message').html("<%=j render partial: 'shared/message' %>")
     setTimeout(function() {
-      $this.find('.alert-custom').fadeOut(5000)
+      $('#message .alert-custom').fadeOut(5000)
     }, 1000)
   }
-})
 
-
-$('#message').html("<%=j render partial: 'shared/message' %>")
-setTimeout(function() {
-  $('#message .alert-custom').fadeOut(5000)
-}, 1000)
+})();

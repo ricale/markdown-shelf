@@ -2,20 +2,27 @@
   .header.col-sm-7
     = render 'header'
 
-  #message.message.col-sm-3
-    = render partial: 'shared/message'
+  .col-sm-5
 
-  .menu.col-sm-2.text-right
-    = render 'data'
-    = render 'menu'
+    .menu.pull-right.text-right
+      = render 'data'
+      = render 'menu'
+
+    #message.message.pull-right.text-right
+      = render partial: 'shared/message'
 
 .row
   #sidebar.sidebar.col-sm-2
-    = render 'list'
+    .sidebar-container
+      - unless current_user.nil?
+        = render 'sidebar_menu'
+      = render 'list'
 
   .col-sm-5
     %textarea#source.source.box
   .col-sm-5
     #target.target.box
 
-= render partial: 'shared/modal'
+= render partial: 'shared/modal', locals: {modal_id: "modal-edit-writing", modal_body_path: 'home/modal_content/edit_writing'}
+= render partial: 'shared/modal', locals: {modal_id: "modal-new-category", modal_body_path: 'home/modal_content/new_category'}
+= render partial: 'shared/modal', locals: {modal_id: "modal-edit-category", modal_body_path: 'home/modal_content/edit_category'}

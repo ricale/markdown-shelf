@@ -1,2 +1,15 @@
+$('.modal-message').each(function() {
+  var $this = $(this)
+  if($this.css('display') != 'none') {
+    $this.html("<%=j render partial: 'shared/message' %>")
+    setTimeout(function() {
+      $this.find('.alert-custom').fadeOut(5000)
+    }, 1000)
+  }
+})
+
+
 $('#message').html("<%=j render partial: 'shared/message' %>")
-$('#message .alert-custom').fadeOut(1000)
+setTimeout(function() {
+  $('#message .alert-custom').fadeOut(5000)
+}, 1000)

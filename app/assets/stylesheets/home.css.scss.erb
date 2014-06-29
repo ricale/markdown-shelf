@@ -1,0 +1,112 @@
+// Place all the styles related to the home controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+/*
+ *= require application
+ *= require_self
+ */
+
+html, body {
+  margin: 0px;
+  padding: 0px;
+}
+
+
+.list-icon   { width: 10px; height: 10px; }
+.button-icon { width: 15px; height: 15px; }
+
+.box {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+
+  display: inline-block;
+  
+  width: 100%;
+  padding: 3px;
+}
+
+
+
+
+.modal-message {
+  padding-bottom: 15px;
+  text-align: center;
+}
+
+
+
+
+.header {
+  * {
+    margin-right: 10px;
+  }
+}
+
+.message,
+.menu {
+  margin-top: 20px;
+}
+
+.list {
+  padding: 3px;
+  border: 1px solid #000;
+  overflow: auto;
+
+  > ul {
+    padding-left: 0px;
+
+    ul {
+      padding-left: 20px;
+    }
+  }
+
+  ul { list-style: none; }
+  li { padding: 2px; }
+}
+
+.source {
+  border: 1px solid #000;
+}
+
+.target {
+  border: 1px solid #000;
+  overflow: auto;
+}
+
+.sidebar-container {
+  height: 100%;
+
+  .sidebar_menu {
+    margin-bottom: 5px;
+  }
+}
+
+.writing {
+  cursor: pointer;
+  list-style: none;
+  a { display: none; }
+}
+
+.writing:hover {
+  background-color: #DDD;
+  a { display: inline; }
+}
+
+.active_writing {
+  background-color: #AFF
+}
+
+
+
+.category {
+  span       a { display: none; }
+  span:hover a { display: inline; }
+
+  .category_info {
+    display: inline-block;
+    width: 100%;
+  }
+}
+

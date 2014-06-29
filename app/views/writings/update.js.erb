@@ -1,3 +1,8 @@
 <%= render partial: "shared/show_message" %>
 
-$('#list ul #writing_<%= @writing.id %>').text("<%= @writing.title %>")
+<% if @writing.category_id_was_changed? %>
+  $('#writing_<%= @writing.id %>').remove()
+  $('#category_<%= @writing.category_id || 0 %> ul').append("<%=j render @writing %>")
+<% else %>
+  $('#writing_<%= @writing.id %>').text("<%= @writing.title %>")
+<% end %>

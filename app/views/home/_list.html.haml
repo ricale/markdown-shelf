@@ -1,4 +1,7 @@
 #list.list.box
   %ul
-    - @writings.each do |writing|
-      = render writing
+    - @categories.each do |category|
+      = render partial: "categories/category", locals: {category: category, writings: @writings[category.id]}
+
+    - if !@writings[0].nil? and !@writings[0].empty?
+      = render @writings[0]

@@ -1,0 +1,19 @@
+.modal-header
+  %button.close{type: "button", "data-dismiss" => "modal", "aria-hidden" => "true"} &times;
+  %h4.modal-title Change Title and Category
+.modal-body
+  .form-horizontal
+    .modal-message
+    .form-group
+      = label_tag :title, "Title", class: "control-label col-sm-2"
+      .col-sm-8
+        = text_field_tag :title, "", autofocus: true, class: "form-control"
+
+    .form-group
+      = label_tag :category_id, "Category", class: "control-label col-sm-2"
+      .col-sm-8
+        = select_tag :category_id, options_from_collection_for_select(@categories, 'id', 'name', nil), prompt: "Choose Category", class: "form-control"
+
+.modal-footer
+  %button#btn-done.btn.btn-primary{type: "button", "data-dismiss" => "modal"} Done
+  %button.btn.btn-default{type: "button", "data-dismiss" => "modal"} Cancel

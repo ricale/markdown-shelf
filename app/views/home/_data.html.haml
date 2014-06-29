@@ -1,3 +1,3 @@
-= hidden_field_tag :writing_id, current_user.nil? ? "" : 0
-= hidden_field_tag :category_id
-= hidden_field_tag :private
+= hidden_field_tag :writing_id, current_user.nil? ? "" : 0, id: "data_writing_id"
+= hidden_field_tag :category_id, nil, id: "data_category_id"
+= hidden_field_tag :private, nil, id: "data_private"

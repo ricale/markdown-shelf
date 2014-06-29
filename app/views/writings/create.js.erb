@@ -1,4 +1,4 @@
 <%= render partial: "shared/show_message" %>
 
-$('#list ul').append("<%=j render @writing %>")
+$('#category_<%= @writing.category_id || 0 %> ul').append("<%=j render @writing %>")
 $('input[name="writing_id"]').val("<%= @writing.id %>")

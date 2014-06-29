@@ -1,0 +1,4 @@
+<%= render partial: "shared/show_message" %>
+
+$('#list .category').last().after("<%=j render @category %>")
+$('#modal-new-category').modal('hide')

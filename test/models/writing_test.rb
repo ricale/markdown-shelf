@@ -8,6 +8,7 @@
 #  title       :string(255)      not null
 #  content     :text             not null
 #  private     :boolean          not null
+#  ordered     :integer          not null
 #  created_at  :datetime
 #  updated_at  :datetime
 #

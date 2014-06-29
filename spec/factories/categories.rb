@@ -5,6 +5,7 @@
 #  id         :integer          not null, primary key
 #  user_id    :integer          not null
 #  name       :string(255)      not null
+#  ordered    :integer          not null
 #  created_at :datetime
 #  updated_at :datetime
 #

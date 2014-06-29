@@ -1,9 +1,11 @@
 class WritingsController < ApplicationController
   before_action :signed_in_user?
+  before_action :clear_flash
 
   def show
-    @writing = Writing.find(params[:id])
-    is_own_writing?(@writing.user_id)
+    @writing = Writing.with_category_name(params[:id]).first
+    puts @writing.inspect
+    is_own?(@writing.user_id)
 
   rescue => e
     flash[:alert] = e.to_s
@@ -23,7 +25,7 @@ class WritingsController < ApplicationController
 
   def update
     @writing = Writing.find(params[:id])
-    is_own_writing?(@writing.user_id)
+    is_own?(@writing.user_id)
 
     @writing.update!(writing_params)
     flash[:notice] = "Writing was successfully saved."
@@ -37,17 +39,6 @@ class WritingsController < ApplicationController
   end
 
   private
-
-  def signed_in_user?
-    if current_user.nil?
-      flash[:alert] = t(:unauthenticated, scope: [:devise, :failure])
-      render "shared/message"
-    end
-  end
-
-  def is_own_writing?(writing_user_id)
-    raise "You have no authority." unless current_user.id == writing_user_id
-  end
 
   def writing_params
     params.require(:writing).permit(:title, :content, :category_id, :private)

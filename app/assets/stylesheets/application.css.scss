@@ -13,8 +13,18 @@
 
 @import "bootstrap";
 
+.link-default { color: $gray-light; }
+.link-warning { color: $brand-warning; }
+
 .display_inline {
   display: inline-block;
+}
+
+.light {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
 }
 
 /*
@@ -22,8 +32,7 @@
  */
 
 .alert-custom {
-  padding: 3px 0;
-  margin-bottom: 10px;
+  padding: 3px;
 }
 
 .alert-custom.alert-dismissable button {

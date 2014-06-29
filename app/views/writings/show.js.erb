@@ -2,11 +2,11 @@ $('#source').val("<%=j @writing.content %>")
 $('#target').html(hmd.decode("<%=j @writing.content %>"))
 $('#writing_title').html("<%=j @writing.title %>")
 
-$('input[name="writing_id"]').val("<%= @writing.id %>")
-$('input[name="category_id"]').val("<%= @writing.category_id %>")
-$('input[name="private"]').val("<%= @writing.private %>")
-
 <%
-  category_name = @writing.category_id.nil? ? "" : @writing.category.name
+  category_name = @writing.category_name.blank? ? 'Not categorized' : @writing.category_name
 %>
 $('#writing_category').html("<%= category_name %>")
+
+$('#data_writing_id').val("<%= @writing.id %>")
+$('#data_category_id').val("<%= @writing.category_id %>")
+$('#data_private').val("<%= @writing.private %>")

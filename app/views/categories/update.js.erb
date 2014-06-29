@@ -1,0 +1,5 @@
+<%= render partial: "shared/show_message" %>
+
+$('#category_<%= @category.id %> .name').text("<%= @category.name %>")
+
+$('#modal-edit-category').modal('hide')

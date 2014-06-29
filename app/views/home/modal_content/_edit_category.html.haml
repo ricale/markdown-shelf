@@ -1,0 +1,16 @@
+.modal-header
+  %button.close{type: "button", "data-dismiss" => "modal", "aria-hidden" => "true"} &times;
+  %h4.modal-title Update Category
+
+= form_tag "#", remote: true, method: :put do
+  .modal-body
+    .modal-message
+    .form-horizontal
+      .form-group
+        = label_tag :name, "Name", class: "control-label col-sm-2"
+        .col-sm-8
+          = text_field_tag :'category[name]', "", autofocus: true, class: "form-control"
+
+  .modal-footer
+    = submit_tag "Save", class: "btn btn-primary"
+    %button.btn.btn-default{type: "button", "data-dismiss" => "modal"} Cancel

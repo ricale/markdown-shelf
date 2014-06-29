@@ -14,6 +14,11 @@ shelf.isChanged = false
 shelf.confirmMessageToNotSave = "저장되지 않았습니다. 계속 하시겠습니까?"
 shelf.confirmMessageWhenUnload = "저장되지 않은 데이터가 있습니다."
 
+
+#
+#
+# responsive
+
 shelf.resizeResponsive = ->
   $source = $("#source")
   $target = $("#target")
@@ -23,22 +28,22 @@ shelf.resizeResponsive = ->
     boxHeight = $(window).height() - $source.offset().top - 15
     $source.css("height", boxHeight)
     $target.css("height", boxHeight)
-    $list.css(  "height", boxHeight)
+
+    listHeight = $(window).height() - $list.offset().top - 15
+    $list.css("height", listHeight)
 
   return
 
+#
+#
+# hmd
 
 shelf.runHmd = ->
   hmd.run "#source", "#target"
 
-
-shelf.confirmToNotSave = (event) ->
-  if shelf.isChanged
-    return confirm(shelf.confirmMessageToNotSave)
-  else
-    return true
-
-
+#
+#
+# writing
 
 shelf.newWriting = (event) ->
   event.preventDefault()
@@ -46,15 +51,14 @@ shelf.newWriting = (event) ->
   if !shelf.confirmToNotSave()
     return false
 
-  $("input[name='writing_id']").val("")
+  $("#data_writing_id").val("0")
+  $("#data_category_id").val("")
   $("#writing_title").text("New Document")
-  $("input[name='category_id']").val("")
   $("#source").val("")
   $("#target").text("")
   $("input[name='private']").val("true")
 
-  shelf.isChanged = false
-  $('#source').bind('input propertychange', shelf.onChangeSource)
+  shelf.SourceIsSaved()
 
 shelf.showWriting = (event) ->
   if !shelf.confirmToNotSave()
@@ -67,18 +71,14 @@ shelf.showWriting = (event) ->
     type: "GET"
     dataType: "script"
   ).done ->
-    shelf.isChanged = false
-    $('#source').bind('input propertychange', shelf.onChangeSource)
+    shelf.SourceIsSaved()
 
 shelf.saveWriting = (event) ->
   event.preventDefault()
 
-  if !shelf.confirmToNotSave()
-    return false
-
-  writingId  = $("input[name='writing_id']").val()
+  writingId  = $("#data_writing_id").val()
+  categoryId = $("#data_category_id").val()
   title      = $("#writing_title").text()
-  categoryId = $("input[name='category_id']").val()
   content    = $("#source").val()
   isPrivate  = $("input[name='private']").val()
 
@@ -109,27 +109,62 @@ shelf.saveWriting = (event) ->
     data: data
     dataType: "script"
   ).done ->
-    shelf.isChanged = false
-    $('#source').bind('input propertychange', shelf.onChangeSource)
-
+    shelf.SourceIsSaved()
 
 
 shelf.editTitleAndCategory = (event) ->
-  if $("input[name='writing_id'").val() != ""
-    $('#modal-basic .modal-title').text("Change Title and Category")
-    $('#modal-basic input[name="title"]').val($('#writing_title').text())
-    $('#modal-basic input[name="category"]').val()
-    $('#modal-basic').modal 'show'
+  if $('#data_writing_id').val() != ""
+    $('#modal-edit-writing input[name="title"]').val($('#writing_title').text())
+    $('#modal-edit-writing select[name="category_id"]').val($('#data_category_id').val())
+    $('#modal-edit-writing').modal 'show'
 
 shelf.updateTitleAndCategory = (event) ->
-  $('#writing_title').text($('#modal-basic input[name="title"]').val())
-  # $('#writing_title').title() $('#modal-basic input[name="category"]').val()
+  $('#writing_title').text($('#modal-edit-writing input[name="title"]').val())
+  $('#writing_category').text($('#modal-edit-writing select[name="category_id"] option:selected').text())
+  $('#data_category_id').val($('#modal-edit-writing select[name="category_id"]').val())
+  shelf.onChangeSource()
 
+#
+#
+# category
 
+shelf.newCategory = (event) ->
+  event.preventDefault()
+  if $('#data_writing_id').val() != ""
+    $('#modal-new-category form').attr('action', "<%= categories_path %>")
+    $('#modal-new-category input[name="category[name]"]').val("")
+    $('#modal-new-category').modal 'show'
+
+shelf.editCategory = (event) ->
+  event.preventDefault()
+  if $('#data_writing_id').val() != ""
+    $this = $(this)
+    categoryId = $this.closest("li").attr('id').slice(9)
+    categoryName = $this.closest("li").find('.name').text()
+
+    $('#modal-edit-category form').attr('action', "<%= categories_path %>/" + categoryId)
+    $('#modal-edit-category input[name="category[name]"]').val(categoryName)
+    $('#modal-edit-category').modal 'show'
+
+#
+#
+# etc
+
+shelf.confirmToNotSave = (event) ->
+  if shelf.isChanged
+    return confirm(shelf.confirmMessageToNotSave)
+  else
+    return true
 
 shelf.onChangeSource = (event) ->
   shelf.isChanged = true
   $('#source').unbind('input propertychange', shelf.onChangeSource)
+  $('#save-light').changeClass('bg-success', 'bg-danger')
+
+shelf.SourceIsSaved = (event) ->
+  shelf.isChanged = false
+  $('#source').bind('input propertychange', shelf.onChangeSource)
+  $('#save-light').changeClass('bg-danger', 'bg-success')
 
 
 
@@ -139,14 +174,19 @@ shelf.onReadyDocument = ->
 
   $('#new_writing_button').click(shelf.newWriting)
   $('#save_writing_button').click(shelf.saveWriting)
-  $('#list').on 'click', '.writing', shelf.showWriting
+  $('#list').on('click', '.writing', shelf.showWriting)
+  $('#list').on('click', '.edit_category_button', shelf.editCategory)
+
+  $('#new_category_button').click(shelf.newCategory)
 
   $('#source').bind('input propertychange', shelf.onChangeSource)
 
   $('#writing_title').click(shelf.editTitleAndCategory)
   $('#writing_category').click(shelf.editTitleAndCategory)
 
-  $('#modal-basic #btn-done').click(shelf.updateTitleAndCategory)
+  $('#modal-edit-writing #btn-done').click(shelf.updateTitleAndCategory)
+
+
 
 $(document).ready shelf.onReadyDocument
 $(document).on 'page:load', shelf.onReadyDocument

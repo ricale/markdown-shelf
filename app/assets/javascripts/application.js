@@ -18,3 +18,8 @@
 jQuery.fn.exists = function() {
     return this.length > 0;
 }
+
+jQuery.fn.changeClass = function(removingClass, addingClass) {
+    this.removeClass(removingClass).addClass(addingClass);
+    return this.length > 0;
+}

@@ -15,6 +15,23 @@
 //= require bootstrap
 //= require turbolinks
 
+if(typeof shelf == typeof undefined) {
+  shelf = {}
+}
+
+shelf.stopEventPropagation = function(event) {
+    if (!event) {
+      event = window.event;
+    }
+
+    if (e.stopPropagation) {
+      e.stopPropagation();
+
+    } else {
+      e.cancelBubble = true;
+    }
+}
+
 jQuery.fn.exists = function() {
     return this.length > 0;
 }

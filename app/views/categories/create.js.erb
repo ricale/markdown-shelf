@@ -6,4 +6,5 @@ if($('#list .category').last().exists()) {
   $('#list ul').prepend("<%=j render @category %>")
 }
 
+$('#modal-edit-writing #category_id').append("<option value=<%= @category.id %>><%= @category.name %></option>")
 $('#modal-new-category').modal('hide')

@@ -64,6 +64,10 @@ shelf.showWriting = (event) ->
   if !shelf.confirmToNotSave()
     return false
 
+  $eventTarget = $(event.target)
+  if $eventTarget.is('.remove_writing_button') or $eventTarget.is('.remove_writing_button .glyphicon')
+    return true
+
   writingId = $(this).attr('id').slice(8)
 
   $.ajax(

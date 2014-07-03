@@ -1,5 +1,5 @@
-$('#source').val("<%=j @writing.content %>")
-$('#target').html(hmd.decode("<%=j @writing.content %>"))
+$('#source').val("<%=j @writing.content.html_safe %>")
+$('#target').html(hmd.decode("<%=j @writing.content.html_safe %>"))
 $('#writing_title').html("<%=j @writing.title %>")
 
 <%

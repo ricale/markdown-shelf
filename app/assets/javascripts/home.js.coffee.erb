@@ -13,6 +13,7 @@ shelf = {} unless typeof shelf is typeof {}
 shelf.isChanged = false
 shelf.confirmMessageToNotSave = "저장되지 않았습니다. 계속 하시겠습니까?"
 shelf.confirmMessageWhenUnload = "저장되지 않은 데이터가 있습니다."
+shelf.notCategorizedText = "Not categorized"
 
 
 #
@@ -54,6 +55,7 @@ shelf.newWriting = (event) ->
   $("#data_writing_id").val("0")
   $("#data_category_id").val("")
   $("#writing_title").text("New Document")
+  $("#writing_category").text(shelf.notCategorizedText)
   $("#source").val("")
   $("#target").text("")
   $("input[name='private']").val("true")
@@ -124,8 +126,16 @@ shelf.editTitleAndCategory = (event) ->
 
 shelf.updateTitleAndCategory = (event) ->
   $('#writing_title').text($('#modal-edit-writing input[name="title"]').val())
-  $('#writing_category').text($('#modal-edit-writing select[name="category_id"] option:selected').text())
-  $('#data_category_id').val($('#modal-edit-writing select[name="category_id"]').val())
+
+  categoryId = $('#modal-edit-writing select[name="category_id"]').val()
+  $('#data_category_id').val(categoryId)
+
+  $categoryName = $('#writing_category')
+  if categoryId == 0 or categoryId == ""
+    $categoryName.text(shelf.notCategorizedText)
+  else
+    $categoryName.text($('#modal-edit-writing select[name="category_id"] option:selected').text())
+
   shelf.onChangeSource()
 
 #

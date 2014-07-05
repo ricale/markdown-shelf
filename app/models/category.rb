@@ -26,6 +26,6 @@ class Category < ActiveRecord::Base
 
   def default_values
     bottom_order = Category.where(user_id: self.user_id).maximum(:ordered)
-    self.ordered = bottom_order.nil? ? 0 : bottom_order + 1
+    self.ordered ||= bottom_order.nil? ? 0 : bottom_order + 1
   end
 end

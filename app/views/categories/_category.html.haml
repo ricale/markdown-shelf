@@ -3,7 +3,7 @@
     = image_tag "icons/folder.png", class: "list-icon"
     %span.name= category.name
     %span.pull-right
-      = icon_link_to 'edit',   "#",                                     class: 'link-default edit_category_button'
+      = icon_link_to 'edit',   "#",                                     class: 'link-info    edit_category_button'
       = icon_link_to 'remove', category, method: :delete, remote: true, class: 'link-warning remove_category_button'
 
   %ul

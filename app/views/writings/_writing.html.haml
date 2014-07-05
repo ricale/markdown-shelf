@@ -1,4 +1,6 @@
 %li.writing{id: "writing_#{writing.id}"}
-  = image_tag "icons/document.png", class: "list-icon"
-  %span.name= writing.title
-  = icon_link_to 'remove', writing, method: :delete, remote: true, data: {confirm: "Are You Sure?"}, class: 'link-warning remove_writing_button pull-right'
+  .writing_title
+    = image_tag "icons/document.png", class: "list-icon"
+    %span.name= writing.title
+    %span.pull-right
+      = icon_link_to 'remove', writing, method: :delete, remote: true, data: {confirm: "Are You Sure?"}, class: 'link-warning remove_writing_button'

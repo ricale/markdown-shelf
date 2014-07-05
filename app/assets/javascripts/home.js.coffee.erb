@@ -154,7 +154,7 @@ shelf.editCategory = (event) ->
   if $('#data_writing_id').val() != ""
     $this = $(this)
     categoryId = $this.closest("li").attr('id').slice(9)
-    categoryName = $this.closest("li").find('.name').text()
+    categoryName = $this.closest("li").find('.category_info .name').text()
 
     $('#modal-edit-category form').attr('action', "<%= categories_path %>/" + categoryId)
     $('#modal-edit-category input[name="category[name]"]').val(categoryName)

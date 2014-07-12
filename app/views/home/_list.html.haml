@@ -1,5 +1,5 @@
-#list.list.box
-  %ul.category_root
+#list.writing_list.box
+  %ul.category_root_writings.category_writings
     - @categories.each do |category|
       = render partial: "categories/category", locals: {category: category, writings: @writings[category.id]}
 

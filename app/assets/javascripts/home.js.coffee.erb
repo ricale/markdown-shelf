@@ -8,7 +8,7 @@
 
 <% environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
 
-shelf = {} unless typeof shelf is typeof {}
+window.shelf = {} unless typeof window.shelf is typeof {}
 
 shelf.isChanged = false
 shelf.confirmMessageToNotSave = "저장되지 않았습니다. 계속 하시겠습니까?"
@@ -60,7 +60,7 @@ shelf.newWriting = (event) ->
   $("#target").text("")
   $("input[name='private']").val("true")
 
-  shelf.SourceIsSaved()
+  shelf.writingIsSaved()
 
 shelf.showWriting = (event) ->
   if !shelf.confirmToNotSave()
@@ -72,12 +72,10 @@ shelf.showWriting = (event) ->
 
   writingId = $(this).attr('id').slice(8)
 
-  $.ajax(
+  $.ajax
     url: "/writings/" + writingId
     type: "GET"
     dataType: "script"
-  ).done ->
-    shelf.SourceIsSaved()
 
 shelf.saveWriting = (event) ->
   event.preventDefault()
@@ -109,13 +107,12 @@ shelf.saveWriting = (event) ->
         content: content
         private: isPrivate
 
-  $.ajax(
+  $.ajax
     url: url
     type: type
     data: data
     dataType: "script"
-  ).done ->
-    shelf.SourceIsSaved()
+
 
 
 shelf.editTitleAndCategory = (event) ->
@@ -175,7 +172,7 @@ shelf.onChangeSource = (event) ->
   $('#source').unbind('input propertychange', shelf.onChangeSource)
   $('#save-light').changeClass('bg-success', 'bg-danger')
 
-shelf.SourceIsSaved = (event) ->
+shelf.writingIsSaved = (event) ->
   shelf.isChanged = false
   $('#source').bind('input propertychange', shelf.onChangeSource)
   $('#save-light').changeClass('bg-danger', 'bg-success')

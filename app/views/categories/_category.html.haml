@@ -6,6 +6,6 @@
       = icon_link_to 'edit',   "#",                                     class: 'link-info    edit_category_button'
       = icon_link_to 'remove', category, method: :delete, remote: true, class: 'link-warning remove_category_button'
 
-  %ul
+  %ul.category_writings
     - if defined?(writings) and !writings.nil?
       = render writings

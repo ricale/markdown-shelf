@@ -1,5 +1,5 @@
-.row
-  .header.col-sm-7
+.header.row
+  .col-sm-7
     = render 'header'
 
   .col-sm-5
@@ -11,9 +11,9 @@
     #message.message.pull-right.text-right
       = render partial: 'shared/message'
 
-.row
-  #sidebar.sidebar.col-sm-2
-    .sidebar-container
+.contents.row
+  #sidebar.col-sm-2
+    .sidebar
       - unless current_user.nil?
         = render 'sidebar_menu'
       = render 'list'

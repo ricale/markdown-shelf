@@ -1,0 +1,5 @@
+<%= render partial: "shared/show_message" %>
+
+<% if flash[:alert].blank? %>
+  <%= yield %>
+<% end %>

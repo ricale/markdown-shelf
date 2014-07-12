@@ -1,5 +1,3 @@
-<%= render partial: "shared/show_message" %>
-
 <% if @writing.category_id_was_changed? %>
   $('#writing_<%= @writing.id %>').remove()
 
@@ -12,3 +10,5 @@
 <% else %>
   $('#writing_<%= @writing.id %> .name').text("<%= @writing.title %>")
 <% end %>
+
+shelf.writingIsSaved();

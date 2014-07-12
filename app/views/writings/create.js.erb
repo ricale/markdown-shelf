@@ -1,9 +1,8 @@
-<%= render partial: "shared/show_message" %>
-
 <% if @writing.category_id.nil? %>
-  $('#list .category_root').append("<%=j render @writing %>")
+  $('#list .category_root_writings').append("<%=j render @writing %>")
 <% else %>
   $('#category_<%= @writing.category_id %> ul').append("<%=j render @writing %>")
 <% end%>
-
 $('input[name="writing_id"]').val("<%= @writing.id %>")
+
+shelf.writingIsSaved();

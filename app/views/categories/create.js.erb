@@ -1,5 +1,3 @@
-<%= render partial: "shared/show_message" %>
-
 if($('#list .category').last().exists()) {
   $('#list .category').last().after("<%=j render @category %>")
 } else {

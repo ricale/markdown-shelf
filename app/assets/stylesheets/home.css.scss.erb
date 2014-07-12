@@ -12,7 +12,6 @@ html, body {
   padding: 0px;
 }
 
-
 .list-icon   { width: 10px; height: 10px; }
 .button-icon { width: 15px; height: 15px; }
 
@@ -27,97 +26,83 @@ html, body {
   padding: 3px;
 }
 
-
-
-
 .modal-message {
   padding-bottom: 15px;
   text-align: center;
 }
 
-
-
-
 .header {
   margin-top: 15px;
   margin-bottom: 5px;
 
-  * {
+  .light,
+  .current_writing_title,
+  .current_writing_category_name {
     margin-right: 10px;
-    margin-top: 0px;
+    margin-top:    0px;
     margin-bottom: 0px;
   }
 
-  .light {
-    // vertical-align: bottom;
-  }
-
-  .writing_title {
+  .current_writing_title {
     max-width: 75%;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
   }
 
-  .writing_category {
+  .current_writing_category_name {
     max-width: 18%;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+  }
+
+  .message,
+  .menu {
+    margin-top: 5px;
   }
 }
 
-.message,
-.menu {
-  margin-top: 20px;
+.contents {
+  .sidebar {
+    height: 100%;
+
+    .menu {
+      margin-bottom: 5px;
+    }
+  }
+
+  .source {
+    border: 1px solid #000;
+  }
+
+  .target {
+    border: 1px solid #000;
+    overflow: auto;
+  }
+
 }
 
-.list {
+.contents .writing_list {
   padding: 3px;
   border: 1px solid #000;
   overflow: auto;
 
-  > ul {
+  .category_root_writings {
     padding-left: 0px;
 
-    ul {
+    .category_writings {
       padding-left: 15px;
     }
   }
 
-  ul { list-style: none; }
-  li { padding: 2px; }
-
-  .writing_title {
-    text-indent: -10px;
-    padding-left: 10px;
-  }
-
-  .writing {
-    cursor: pointer;
+  .category_writings {
     list-style: none;
-    a { display: none; }
   }
 
-  .writing:hover {
-    background-color: #DDD;
-    a { display: inline; }
+  .category,
+  .writing {
+    padding: 2px;
   }
-
-  .active_writing {
-    background-color: #AFF
-  }
-
-
 
   .category {
-    span       a {
-      display: none;
-      text-indent:  0px;
-      padding-left: 0px;
-    }
-    span:hover a { display: inline; }
-
     .category_info {
       display: inline-block;
       width: 100%;
@@ -125,22 +110,41 @@ html, body {
       text-indent: -10px;
       padding-left: 10px;
     }
+
+    .category_info a {
+      display: none;
+      text-indent:  0px;
+      padding-left: 0px;
+    }
+
+    .category_info:hover a {
+      display: inline;
+    }
   }
-}
 
-.source {
-  border: 1px solid #000;
-}
+  .writing {
+    cursor: pointer;
+    list-style: none;
 
-.target {
-  border: 1px solid #000;
-  overflow: auto;
-}
+    .writing_info {
+      text-indent: -10px;
+      padding-left: 10px;
+    }
 
-.sidebar-container {
-  height: 100%;
+    .writing_info a {
+      display: none;
+    }
 
-  .sidebar_menu {
-    margin-bottom: 5px;
+    .writing_info:hover a {
+      display: inline;
+    }
+  }
+
+  .writing:hover {
+    background-color: #DDD;
+  }
+
+  .active_writing {
+    background-color: #AFF
   }
 }

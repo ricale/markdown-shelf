@@ -4,12 +4,26 @@ class WritingsController < ApplicationController
 
   def show
     @writing = Writing.with_category_name(params[:id]).first
-    puts @writing.inspect
+    raise "Writing does not exist" if @writing.nil?
     is_own?(@writing.user_id)
+
+    respond_to do |format|
+      format.html {
+        list_data
+        render "home/index"
+      }
+      format.json {}
+    end
 
   rescue => e
     flash[:alert] = e.to_s
-    render "shared/message"
+    respond_to do |format|
+      format.html {
+        list_data
+        render "home/index"
+      }
+      format.json {}
+    end
   end
 
   def create

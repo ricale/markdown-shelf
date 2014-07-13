@@ -3,207 +3,238 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 #= require application
+#= require jquery.history
 #= require hmd/hmd
 #= require hmd/hmd.ricaleinline
 
 <% environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
 
-window.shelf = {} unless typeof window.shelf is typeof {}
+window.shelf = {} if typeof window.shelf is typeof undefined
 
-shelf.isChanged = false
-shelf.confirmMessageToNotSave = "저장되지 않았습니다. 계속 하시겠습니까?"
-shelf.confirmMessageWhenUnload = "저장되지 않은 데이터가 있습니다."
-shelf.notCategorizedText = "Not categorized"
+(->
+  isChanged = false
+  confirmMessageToNotSave = "저장되지 않았습니다. 계속 하시겠습니까?"
+  confirmMessageWhenUnload = "저장되지 않은 데이터가 있습니다."
+  notCategorizedText = "Not categorized"
 
+  STATE =
+    NEW:  1
+    SHOW: 2
 
-#
-#
-# responsive
+  #
+  #
+  # responsive
 
-shelf.resizeResponsive = ->
-  $source = $("#source")
-  $target = $("#target")
-  $list   = $("#list")
+  resizeResponsive = ->
+    $source = $("#source")
+    $target = $("#target")
+    $list   = $("#list")
 
-  if $source.exists()
-    boxHeight = $(window).height() - $source.offset().top - 15
-    $source.css("height", boxHeight)
-    $target.css("height", boxHeight)
+    if $source.exists()
+      boxHeight = $(window).height() - $source.offset().top - 15
+      $source.css("height", boxHeight)
+      $target.css("height", boxHeight)
 
-    listHeight = $(window).height() - $list.offset().top - 15
-    $list.css("height", listHeight)
+      listHeight = $(window).height() - $list.offset().top - 15
+      $list.css("height", listHeight)
 
-  return
+    return
 
-#
-#
-# hmd
+  #
+  #
+  # hmd
 
-shelf.runHmd = ->
-  hmd.run "#source", "#target"
+  runHmd = ->
+    hmd.run "#source", "#target"
 
-#
-#
-# writing
+  #
+  #
+  # writing
 
-shelf.newWriting = (event) ->
-  event.preventDefault()
+  requestNewWriting = (event) ->
+    event.preventDefault()
+    return false if !confirmToNotSave()
 
-  if !shelf.confirmToNotSave()
-    return false
+    History.pushState({state: STATE.NEW}, "Markdown-shelf", "/");
 
-  $("#data_writing_id").val("0")
-  $("#data_category_id").val("")
-  $("#writing_title").text("New Document")
-  $("#writing_category").text(shelf.notCategorizedText)
-  $("#source").val("")
-  $("#target").text("")
-  $("input[name='private']").val("true")
+  responseNewWriting = ->
+    $("#data_writing_id").val("0")
+    $("#data_category_id").val("")
+    $("#writing_title").text("New Document")
+    $("#writing_category").text(notCategorizedText)
+    $("#source").val("")
+    $("#target").text("")
+    $("input[name='private']").val("true")
 
-  shelf.writingIsSaved()
+    writingIsSaved()
 
-shelf.showWriting = (event) ->
-  if !shelf.confirmToNotSave()
-    return false
+  requestShowWriting = (event) ->
+    event.preventDefault()
+    return false if !confirmToNotSave()
 
-  $eventTarget = $(event.target)
-  if $eventTarget.is('.remove_writing_button') or $eventTarget.is('.remove_writing_button .glyphicon')
-    return true
+    History.pushState({state: STATE.SHOW}, "Markdown-shelf", $(this).data('href'));
 
-  writingId = $(this).attr('id').slice(8)
+  responseShowWriting = (data) ->
+    $('#source').val(data.content)
+    $('#target').html(hmd.decode(data.content))
+    $('#writing_title').html(data.title)
+    $('#list .writing_selected').removeClass('writing_selected')
+    $('#writing_'+data.id).addClass('writing_selected')
 
-  $.ajax
-    url: "/writings/" + writingId
-    type: "GET"
-    dataType: "script"
+    $('#writing_category').html(data.category_name)
 
-shelf.saveWriting = (event) ->
-  event.preventDefault()
+    $('#data_writing_id').val(data.id)
+    $('#data_category_id').val(data.category_id)
+    $('#data_private').val(data.private)
 
-  writingId  = $("#data_writing_id").val()
-  categoryId = $("#data_category_id").val()
-  title      = $("#writing_title").text()
-  content    = $("#source").val()
-  isPrivate  = $("input[name='private']").val()
+    writingIsSaved();
 
-  if writingId == "0"
-    url = "<%= writings_path %>"
-    type = "POST"
-    data =
-      writing:
-        title: title
-        category_id: categoryId
-        content: content
-        private: isPrivate
+  saveWriting = (event) ->
+    event.preventDefault()
 
-  else
-    url = "/writings/" + writingId
-    type = "PUT"
-    data =
-      writing:
-        id: writingId
-        title: title
-        category_id: categoryId
-        content: content
-        private: isPrivate
+    writingId  = $("#data_writing_id").val()
+    categoryId = $("#data_category_id").val()
+    title      = $("#writing_title").text()
+    content    = $("#source").val()
+    isPrivate  = $("input[name='private']").val()
 
-  $.ajax
-    url: url
-    type: type
-    data: data
-    dataType: "script"
+    if writingId == "0"
+      url = "<%= writings_path %>"
+      type = "POST"
+      data =
+        writing:
+          title: title
+          category_id: categoryId
+          content: content
+          private: isPrivate
 
+    else
+      url = "/writings/" + writingId
+      type = "PUT"
+      data =
+        writing:
+          id: writingId
+          title: title
+          category_id: categoryId
+          content: content
+          private: isPrivate
 
-
-shelf.editTitleAndCategory = (event) ->
-  if $('#data_writing_id').val() != ""
-    $('#modal-edit-writing input[name="title"]').val($('#writing_title').text())
-    $('#modal-edit-writing select[name="category_id"]').val($('#data_category_id').val())
-    $('#modal-edit-writing').modal 'show'
-
-shelf.updateTitleAndCategory = (event) ->
-  $('#writing_title').text($('#modal-edit-writing input[name="title"]').val())
-
-  categoryId = $('#modal-edit-writing select[name="category_id"]').val()
-  $('#data_category_id').val(categoryId)
-
-  $categoryName = $('#writing_category')
-  if categoryId == 0 or categoryId == ""
-    $categoryName.text(shelf.notCategorizedText)
-  else
-    $categoryName.text($('#modal-edit-writing select[name="category_id"] option:selected').text())
-
-  shelf.onChangeSource()
-
-#
-#
-# category
-
-shelf.newCategory = (event) ->
-  event.preventDefault()
-  if $('#data_writing_id').val() != ""
-    $('#modal-new-category form').attr('action', "<%= categories_path %>")
-    $('#modal-new-category input[name="category[name]"]').val("")
-    $('#modal-new-category').modal 'show'
-
-shelf.editCategory = (event) ->
-  event.preventDefault()
-  if $('#data_writing_id').val() != ""
-    $this = $(this)
-    categoryId = $this.closest("li").attr('id').slice(9)
-    categoryName = $this.closest("li").find('.category_info .name').text()
-
-    $('#modal-edit-category form').attr('action', "<%= categories_path %>/" + categoryId)
-    $('#modal-edit-category input[name="category[name]"]').val(categoryName)
-    $('#modal-edit-category').modal 'show'
-
-#
-#
-# etc
-
-shelf.confirmToNotSave = (event) ->
-  if shelf.isChanged
-    return confirm(shelf.confirmMessageToNotSave)
-  else
-    return true
-
-shelf.onChangeSource = (event) ->
-  shelf.isChanged = true
-  $('#source').unbind('input propertychange', shelf.onChangeSource)
-  $('#save-light').changeClass('bg-success', 'bg-danger')
-
-shelf.writingIsSaved = (event) ->
-  shelf.isChanged = false
-  $('#source').bind('input propertychange', shelf.onChangeSource)
-  $('#save-light').changeClass('bg-danger', 'bg-success')
+    $.ajax
+      url: url
+      type: type
+      data: data
+      dataType: "script"
 
 
 
-shelf.onReadyDocument = ->
-  shelf.runHmd()
-  shelf.resizeResponsive()
+  editTitleAndCategory = (event) ->
+    if $('#data_writing_id').val() != ""
+      $('#modal-edit-writing input[name="title"]').val($('#writing_title').text())
+      $('#modal-edit-writing select[name="category_id"]').val($('#data_category_id').val())
+      $('#modal-edit-writing').modal 'show'
 
-  $('#new_writing_button').click(shelf.newWriting)
-  $('#save_writing_button').click(shelf.saveWriting)
-  $('#list').on('click', '.writing', shelf.showWriting)
-  $('#list').on('click', '.edit_category_button', shelf.editCategory)
+  updateTitleAndCategory = (event) ->
+    $('#writing_title').text($('#modal-edit-writing input[name="title"]').val())
 
-  $('#new_category_button').click(shelf.newCategory)
+    categoryId = $('#modal-edit-writing select[name="category_id"]').val()
+    $('#data_category_id').val(categoryId)
 
-  $('#source').bind('input propertychange', shelf.onChangeSource)
+    $categoryName = $('#writing_category')
+    if categoryId == 0 or categoryId == ""
+      $categoryName.text(notCategorizedText)
+    else
+      $categoryName.text($('#modal-edit-writing select[name="category_id"] option:selected').text())
 
-  $('#writing_title').click(shelf.editTitleAndCategory)
-  $('#writing_category').click(shelf.editTitleAndCategory)
+    onChangeSource()
 
-  $('#modal-edit-writing #btn-done').click(shelf.updateTitleAndCategory)
+  #
+  #
+  # category
+
+  newCategory = (event) ->
+    event.preventDefault()
+    if $('#data_writing_id').val() != ""
+      $('#modal-new-category form').attr('action', "<%= categories_path %>")
+      $('#modal-new-category input[name="category[name]"]').val("")
+      $('#modal-new-category').modal 'show'
+
+  editCategory = (event) ->
+    event.preventDefault()
+    if $('#data_writing_id').val() != ""
+      $this = $(this)
+      categoryId = $this.closest("li").attr('id').slice(9)
+      categoryName = $this.closest("li").find('.category_info .name').text()
+
+      $('#modal-edit-category form').attr('action', "<%= categories_path %>/" + categoryId)
+      $('#modal-edit-category input[name="category[name]"]').val(categoryName)
+      $('#modal-edit-category').modal 'show'
+
+  #
+  #
+  # etc
+
+  confirmToNotSave = (event) ->
+    if isChanged
+      return confirm(confirmMessageToNotSave)
+    else
+      return true
+
+  onChangeSource = (event) ->
+    isChanged = true
+    $('#source').unbind('input propertychange', onChangeSource)
+    $('#save-light').changeClass('bg-success', 'bg-danger')
+
+  writingIsSaved = (event) ->
+    isChanged = false
+    $('#source').bind('input propertychange', onChangeSource)
+    $('#save-light').changeClass('bg-danger', 'bg-success')
+
+  #
+  #
+  # document ready event listener
+
+  onReadyDocument = ->
+    runHmd()
+    resizeResponsive()
+
+    $('#new_writing_button').click(requestNewWriting)
+    $('#save_writing_button').click(saveWriting)
+    $('#list').on('click', '.writing', requestShowWriting)
+    $('#list').on('click', '.edit_category_button', editCategory)
+
+    $('#new_category_button').click(newCategory)
+
+    $('#source').bind('input propertychange', onChangeSource)
+
+    $('#writing_title').click(editTitleAndCategory)
+    $('#writing_category').click(editTitleAndCategory)
+
+    $('#modal-edit-writing #btn-done').click(updateTitleAndCategory)
+
+  #
+  #
+  # statechange (hashchange) event listener
+
+  History.Adapter.bind window, 'statechange', ->
+    state = History.getState();
+
+    switch(state.data.state)
+      when STATE.NEW
+        responseNewWriting()
+      when STATE.SHOW
+        $.ajax(
+          url: state.url
+          dataType: 'json'
+        ).done responseShowWriting
 
 
 
-$(document).ready shelf.onReadyDocument
-$(document).on 'page:load', shelf.onReadyDocument
+  $(document).ready onReadyDocument
+  $(document).on 'page:load', onReadyDocument
 
-$(window).load(shelf.resizeResponsive)
-         .resize(shelf.resizeResponsive)
-         .on 'beforeunload', (event) ->
-  if shelf.isChanged
-    return shelf.confirmMessageWhenUnload
+  $(window).load(resizeResponsive)
+           .resize(resizeResponsive)
+           .on 'beforeunload', (event) ->
+    if isChanged
+      return confirmMessageWhenUnload
+)()

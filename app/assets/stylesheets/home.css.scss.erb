@@ -71,6 +71,7 @@ html, body {
 
   .source {
     border: 1px solid #000;
+    overflow-x: hidden;
   }
 
   .target {
@@ -131,11 +132,11 @@ html, body {
       padding-left: 10px;
     }
 
-    .writing_info a {
+    .writing_info .remove_writing_button {
       display: none;
     }
 
-    .writing_info:hover a {
+    .writing_info:hover .remove_writing_button {
       display: inline;
     }
   }
@@ -144,7 +145,7 @@ html, body {
     background-color: #DDD;
   }
 
-  .active_writing {
-    background-color: #AFF
+  .writing_selected {
+    background-color: #FFA
   }
 }

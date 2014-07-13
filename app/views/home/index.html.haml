@@ -1,12 +1,12 @@
 .header.row
   .col-sm-7
-    = render 'header'
+    = render partial: 'home/header'
 
   .col-sm-5
 
     .menu.pull-right.text-right
-      = render 'data'
-      = render 'menu'
+      = render partial: 'home/data'
+      = render partial: 'home/menu'
 
     #message.message.pull-right.text-right
       = render partial: 'shared/message'
@@ -15,11 +15,11 @@
   #sidebar.col-sm-2
     .sidebar
       - unless current_user.nil?
-        = render 'sidebar_menu'
-      = render 'list'
+        = render partial: 'home/sidebar_menu'
+      = render partial: 'home/list'
 
   .col-sm-5
-    %textarea#source.source.box
+    %textarea#source.source.box= @writing.try(:content)
   .col-sm-5
     #target.target.box
 

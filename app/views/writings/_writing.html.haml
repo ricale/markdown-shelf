@@ -1,4 +1,4 @@
-%li.writing{id: "writing_#{writing.id}"}
+%li.writing{id: "writing_#{writing.id}", :"data-href" => "#{writing_path(writing.id)}", class: "#{"writing_selected" if @writing.try(:id) == writing.id}"}
   .writing_info
     = image_tag "icons/document.png", class: "list-icon"
     %span.name= writing.title

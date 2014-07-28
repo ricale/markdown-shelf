@@ -1,2 +1,4 @@
 .menu
-  = link_to image_tag("icons/folder-add.png", class: 'button-icon').html_safe, "#", id: "new_category_button",  label: "Category",  class: 'btn btn-sm btn-default'
+  = icon_link_to 'plus', "#", id: "new_writing_button",  class: 'btn btn-sm btn-default default-tooltip', :"data-toggle" => 'tooltip', title: "Create new writing"
+  = icon_link_to 'save', "#", id: "save_writing_button", class: 'btn btn-sm btn-default default-tooltip', :"data-toggle" => 'tooltip', title: "Save writing"
+  = link_to image_tag("icons/folder-add.png", class: 'button-icon').html_safe, "#", id: "new_category_button", class: 'btn btn-sm btn-default default-tooltip', :"data-toggle" => 'tooltip', title: "Create new category"

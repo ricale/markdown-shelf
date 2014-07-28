@@ -18,10 +18,21 @@ class ApplicationController < ActionController::Base
   end
 
   def signed_in_user?
-    if current_user.nil?
+    if current_user.nil? and !@writing.try(:private)
       flash[:alert] = t(:unauthenticated, scope: [:devise, :failure])
-      render "shared/message"
+
+      respond_to do |format|
+        format.html {
+          list_data
+          render "home/index"
+        }
+        format.js { render "shared/message" }
+      end
     end
+  end
+
+  def is_authorized?(writing)
+    raise "You have no authority." if current_user.try(:id) != writing.user_id and writing.private
   end
 
   def is_own?(owner_user_id)

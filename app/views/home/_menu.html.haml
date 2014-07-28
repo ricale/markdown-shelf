@@ -2,6 +2,4 @@
   = icon_link_to 'log-in', new_user_session_path, label: "Login",  class: 'btn btn-sm btn-default'
 
 - else
-  = icon_link_to 'plus',   "#", id: "new_writing_button",  label: "New",  class: 'btn btn-sm btn-default'
-  = icon_link_to 'save',   "#", id: "save_writing_button", label: "Save", class: 'btn btn-sm btn-default'
   = icon_link_to 'log-out', destroy_user_session_path, method: :delete, label: "Logout", class: 'btn btn-sm btn-default'

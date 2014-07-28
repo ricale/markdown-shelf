@@ -21,7 +21,6 @@ class Writing < ActiveRecord::Base
   validates_presence_of :title
   validates_presence_of :content
   validates_presence_of :ordered
-  validates_presence_of :private
 
   before_validation :default_values
   after_save :category_id_was_changed
@@ -41,7 +40,8 @@ class Writing < ActiveRecord::Base
   def default_values
     bottom_order = Writing.where(user_id: self.user_id).maximum(:ordered)
     self.ordered = bottom_order.nil? ? 0 : bottom_order + 1
-    self.private ||= true
+    self.private = self.private.nil? ? true : self.private
+    true
   end
 
   def category_id_was_changed

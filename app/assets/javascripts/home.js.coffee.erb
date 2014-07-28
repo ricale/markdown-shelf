@@ -11,9 +11,17 @@
 
 window.shelf = {} if typeof window.shelf is typeof undefined
 
+shelf.fadeOutCurrentMessage = ->
+  $('.message .alert-custom').each ->
+    $this = $(this)
+    if $this.is(':visible')
+      setTimeout ->
+        $this.fadeOut(5000)
+      , 1000
+
 (->
   isChanged = false
-  confirmMessageToNotSave = "저장되지 않았습니다. 계속 하시겠습니까?"
+  confirmMessageToNotSave  = "저장되지 않았습니다. 계속 하시겠습니까?"
   confirmMessageWhenUnload = "저장되지 않은 데이터가 있습니다."
   notCategorizedText = "Not categorized"
 
@@ -64,7 +72,7 @@ window.shelf = {} if typeof window.shelf is typeof undefined
     $("#writing_category").text(notCategorizedText)
     $("#source").val("")
     $("#target").text("")
-    $("input[name='private']").val("true")
+    togglePrivate(true)
 
     writingIsSaved()
 
@@ -85,7 +93,7 @@ window.shelf = {} if typeof window.shelf is typeof undefined
 
     $('#data_writing_id').val(data.id)
     $('#data_category_id').val(data.category_id)
-    $('#data_private').val(data.private)
+    togglePrivate(data.private)
 
     writingIsSaved();
 
@@ -96,33 +104,25 @@ window.shelf = {} if typeof window.shelf is typeof undefined
     categoryId = $("#data_category_id").val()
     title      = $("#writing_title").text()
     content    = $("#source").val()
-    isPrivate  = $("input[name='private']").val()
+    isPrivate  = getPrivate()
 
     if writingId == "0"
       url = "<%= writings_path %>"
       type = "POST"
-      data =
-        writing:
-          title: title
-          category_id: categoryId
-          content: content
-          private: isPrivate
 
     else
       url = "/writings/" + writingId
       type = "PUT"
-      data =
-        writing:
-          id: writingId
-          title: title
-          category_id: categoryId
-          content: content
-          private: isPrivate
 
     $.ajax
       url: url
       type: type
-      data: data
+      data:
+        writing:
+          title: title
+          category_id: categoryId
+          content: content
+          private: isPrivate
       dataType: "script"
 
 
@@ -189,6 +189,21 @@ window.shelf = {} if typeof window.shelf is typeof undefined
     $('#source').bind('input propertychange', onChangeSource)
     $('#save-light').changeClass('bg-danger', 'bg-success')
 
+  togglePrivate = (isPrivate) ->
+    $privateRadiobox = $("#writing_private_flag_1")
+    $publicRadiobox  = $("#writing_private_flag_0")
+
+    if isPrivate
+      $privateRadiobox.prop('checked', true).closest('label').addClass('active')
+      $publicRadiobox.prop('checked', false).closest('label').removeClass('active')
+    else
+      $privateRadiobox.prop('checked', false).closest('label').removeClass('active')
+      $publicRadiobox.prop('checked',   true).closest('label').addClass('active')
+
+  getPrivate = ->
+    $('input[name="writing_private_flag"]:checked').val() == "1"
+
+
   #
   #
   # document ready event listener
@@ -211,6 +226,9 @@ window.shelf = {} if typeof window.shelf is typeof undefined
 
     $('#modal-edit-writing #btn-done').click(updateTitleAndCategory)
 
+    $('.default-tooltip').tooltip()
+    shelf.fadeOutCurrentMessage()
+
   #
   #
   # statechange (hashchange) event listener
@@ -226,8 +244,6 @@ window.shelf = {} if typeof window.shelf is typeof undefined
           url: state.url
           dataType: 'json'
         ).done responseShowWriting
-
-
 
   $(document).ready onReadyDocument
   $(document).on 'page:load', onReadyDocument

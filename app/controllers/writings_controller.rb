@@ -1,11 +1,12 @@
 class WritingsController < ApplicationController
-  before_action :signed_in_user?
+  before_action :signed_in_user?, except: :show
   before_action :clear_flash
 
   def show
     @writing = Writing.with_category_name(params[:id]).first
     raise "Writing does not exist" if @writing.nil?
-    is_own?(@writing.user_id)
+    raise "You have no authority." if current_user.nil? and @writing.private
+    is_authorized?(@writing)
 
     respond_to do |format|
       format.html {
@@ -18,10 +19,7 @@ class WritingsController < ApplicationController
   rescue => e
     flash[:alert] = e.to_s
     respond_to do |format|
-      format.html {
-        list_data
-        render "home/index"
-      }
+      format.html { render "shared/error" }
       format.json {}
     end
   end

@@ -15,6 +15,7 @@
   #sidebar.col-sm-2
     .sidebar
       - unless current_user.nil?
+        = render partial: 'home/writing_option_menu'
         = render partial: 'home/sidebar_menu'
       = render partial: 'home/list'
 
@@ -23,6 +24,6 @@
   .col-sm-5
     #target.target.box
 
-= render partial: 'shared/modal', locals: {modal_id: "modal-edit-writing", modal_body_path: 'home/modal_content/edit_writing'}
-= render partial: 'shared/modal', locals: {modal_id: "modal-new-category", modal_body_path: 'home/modal_content/new_category'}
+= render partial: 'shared/modal', locals: {modal_id: "modal-edit-writing",  modal_body_path: 'home/modal_content/edit_writing'}
+= render partial: 'shared/modal', locals: {modal_id: "modal-new-category",  modal_body_path: 'home/modal_content/new_category'}
 = render partial: 'shared/modal', locals: {modal_id: "modal-edit-category", modal_body_path: 'home/modal_content/edit_category'}

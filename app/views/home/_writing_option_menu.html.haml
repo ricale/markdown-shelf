@@ -1,0 +1,8 @@
+.menu
+  .btn-group{"data-toggle" => "buttons"}
+    %label.btn.btn-sm.btn-default{class: @writing.try(:private) || true ? 'active' : ''}
+      = radio_button_tag 'writing_private_flag', '1', @writing.try(:private) || true
+      Private
+    %label.btn.btn-sm.btn-default{class: !(@writing.try(:private) || true) ? 'active' : ''}
+      = radio_button_tag 'writing_private_flag', '0', @writing.try(:private) || false
+      Public

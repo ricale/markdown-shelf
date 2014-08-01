@@ -173,6 +173,15 @@ shelf.fadeOutCurrentMessage = ->
   #
   # etc
 
+  checkChanged = (changed) ->
+    isChanged = changed
+
+    if changed
+      $('#save-light').changeClass('bg-success', 'bg-danger')
+    else
+      $('#save-light').changeClass('bg-danger', 'bg-success')
+
+
   confirmToNotSave = (event) ->
     if isChanged
       return confirm(confirmMessageToNotSave)
@@ -180,14 +189,15 @@ shelf.fadeOutCurrentMessage = ->
       return true
 
   onChangeSource = (event) ->
-    isChanged = true
+    checkChanged(true)
     $('#source').unbind('input propertychange', onChangeSource)
-    $('#save-light').changeClass('bg-success', 'bg-danger')
 
   writingIsSaved = (event) ->
-    isChanged = false
+    checkChanged(false)
     $('#source').bind('input propertychange', onChangeSource)
-    $('#save-light').changeClass('bg-danger', 'bg-success')
+
+  changePrivate = (event) ->
+    checkChanged(true)
 
   togglePrivate = (isPrivate) ->
     $privateRadiobox = $("#writing_private_flag_1")
@@ -227,6 +237,10 @@ shelf.fadeOutCurrentMessage = ->
     $('#modal-edit-writing #btn-done').click(updateTitleAndCategory)
 
     $('.default-tooltip').tooltip()
+    $('.btn-private').button().click ->
+      if !$(this).is('.active')
+        changePrivate()
+
     shelf.fadeOutCurrentMessage()
 
   #

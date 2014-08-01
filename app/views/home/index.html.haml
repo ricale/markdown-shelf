@@ -3,7 +3,6 @@
     = render partial: 'home/header'
 
   .col-sm-5
-
     .menu.pull-right.text-right
       = render partial: 'home/data'
       = render partial: 'home/menu'
@@ -11,12 +10,15 @@
     #message.message.pull-right.text-right
       = render partial: 'shared/message'
 
+.menu.row
+  .col-sm-12
+    - unless current_user.nil?
+      / = render partial: 'home/writing_option_menu'
+      = render partial: 'home/sidebar_menu'
+
 .contents.row
   #sidebar.col-sm-2
     .sidebar
-      - unless current_user.nil?
-        = render partial: 'home/writing_option_menu'
-        = render partial: 'home/sidebar_menu'
       = render partial: 'home/list'
 
   .col-sm-5

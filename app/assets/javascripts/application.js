@@ -24,11 +24,7 @@ jQuery.fn.changeClass = function(removingClass, addingClass) {
     return this.length > 0;
 }
 
-if(typeof window.shelf == typeof undefined) {
-  window.shelf = {}
-}
-
-shelf.stopEventPropagation = function(event) {
+window.stopEventPropagation = function(event) {
     if (!event) {
       event = window.event;
     }

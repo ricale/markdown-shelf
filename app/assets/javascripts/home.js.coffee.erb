@@ -11,15 +11,7 @@
 
 window.shelf = {} if typeof window.shelf is typeof undefined
 
-shelf.fadeOutCurrentMessage = ->
-  $('.message .alert-custom').each ->
-    $this = $(this)
-    if $this.is(':visible')
-      setTimeout ->
-        $this.fadeOut(5000)
-      , 1000
-
-(->
+window.shelf = (->
   isChanged = false
   confirmMessageToNotSave  = "저장되지 않았습니다. 계속 하시겠습니까?"
   confirmMessageWhenUnload = "저장되지 않은 데이터가 있습니다."
@@ -119,6 +111,9 @@ shelf.fadeOutCurrentMessage = ->
     $("#data_category_id").val("")
     $("#writing_title").text("New Document")
     $("#writing_category").text(notCategorizedText)
+
+    $('#list .writing_selected').removeClass('writing_selected')
+
     $("#source").val("")
     $("#target").text("")
     togglePrivate(true)
@@ -220,6 +215,26 @@ shelf.fadeOutCurrentMessage = ->
 
   #
   #
+  # private flag
+
+  changePrivate = (event) ->
+    checkChanged(true)
+
+  togglePrivate = (isPrivate) ->
+    $privateCheckbox = $("#writing_private_flag")
+
+    if isPrivate
+      if !$privateCheckbox.is(':checked')
+        $privateCheckbox.closest('.btn').click()
+    else
+      if $privateCheckbox.is(':checked')
+        $privateCheckbox.closest('.btn').click()
+
+  getPrivate = ->
+    $('#writing_private_flag').is(':checked')
+
+  #
+  #
   # etc
 
   checkChanged = (changed) ->
@@ -245,22 +260,13 @@ shelf.fadeOutCurrentMessage = ->
     checkChanged(false)
     $('#source').bind('input propertychange', onChangeSource)
 
-  changePrivate = (event) ->
-    checkChanged(true)
-
-  togglePrivate = (isPrivate) ->
-    $privateCheckbox = $("#writing_private_flag")
-
-    if isPrivate
-      if !$privateCheckbox.is(':checked')
-        $privateCheckbox.closest('.btn').click()
-    else
-      if $privateCheckbox.is(':checked')
-        $privateCheckbox.closest('.btn').click()
-
-  getPrivate = ->
-    $('#writing_private_flag').is(':checked')
-
+  fadeOutCurrentMessage = ->
+      $('.message .alert-custom').each ->
+        $this = $(this)
+        if $this.is(':visible')
+          setTimeout ->
+            $this.fadeOut(5000)
+          , 1000
 
   #
   #
@@ -293,7 +299,7 @@ shelf.fadeOutCurrentMessage = ->
 
     $('.default-tooltip').tooltip()
 
-    shelf.fadeOutCurrentMessage()
+    fadeOutCurrentMessage()
 
   #
   #
@@ -319,4 +325,10 @@ shelf.fadeOutCurrentMessage = ->
            .on 'beforeunload', (event) ->
     if isChanged
       return confirmMessageWhenUnload
+
+
+  (->
+    savedNow: ->
+      writingIsSaved()
+  )()
 )()

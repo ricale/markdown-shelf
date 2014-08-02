@@ -10,21 +10,27 @@
     #message.message.pull-right.text-right
       = render partial: 'shared/message'
 
-.menu.row
-  .col-sm-12
-    - unless current_user.nil?
-      / = render partial: 'home/writing_option_menu'
+- if current_user.nil?
+  .contents.row
+    #editor.col-sm-6
+      %textarea#source.source.box= @writing.try(:content)
+    #preview.col-sm-6
+      #target.target.box
+
+- else
+  .menu.row
+    .col-sm-12
       = render partial: 'home/sidebar_menu'
 
-.contents.row
-  #sidebar.col-sm-2
-    .sidebar
-      = render partial: 'home/list'
+  .contents.row
+    #sidebar.col-sm-2
+      .sidebar
+        = render partial: 'home/list'
 
-  #editor.col-sm-5
-    %textarea#source.source.box= @writing.try(:content)
-  #preview.col-sm-5
-    #target.target.box
+    #editor.col-sm-5
+      %textarea#source.source.box= @writing.try(:content)
+    #preview.col-sm-5
+      #target.target.box
 
 = render partial: 'shared/modal', locals: {modal_id: "modal-edit-writing",  modal_body_path: 'home/modal_content/edit_writing'}
 = render partial: 'shared/modal', locals: {modal_id: "modal-new-category",  modal_body_path: 'home/modal_content/new_category'}

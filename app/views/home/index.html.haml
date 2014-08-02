@@ -21,9 +21,9 @@
     .sidebar
       = render partial: 'home/list'
 
-  .col-sm-5
+  #editor.col-sm-5
     %textarea#source.source.box= @writing.try(:content)
-  .col-sm-5
+  #preview.col-sm-5
     #target.target.box
 
 = render partial: 'shared/modal', locals: {modal_id: "modal-edit-writing",  modal_body_path: 'home/modal_content/edit_writing'}

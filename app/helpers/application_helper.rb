@@ -12,6 +12,7 @@ module ApplicationHelper
     toggle    = (options[:tooltip].nil? or !options[:tooltip]) ?    "" : " data-toggle='tooltip'"
     title     = options[:title].nil?                           ?    "" : " title='#{options[:title]}'"
     css_class = options[:class].nil?                           ? 'btn' : options[:class]
+    css_class << ' btn-checkbox'
     css_class << ' active' if checked
     css_class << ' default-tooltip' if options[:tooltip]
 

@@ -48,6 +48,55 @@ shelf.fadeOutCurrentMessage = ->
 
     return
 
+  resizeLayout = ->
+    changeClass = (removingClass, addingClass) ->
+      $editorContainer.changeClass(removingClass, addingClass)
+      $previewContainer.changeClass(removingClass, addingClass)
+
+    $sidebarContainer = $('#sidebar')
+    $editorContainer  = $('#editor')
+    $previewContainer = $('#preview')
+
+    gridClasses = ['col-sm-5', 'col-sm-6', 'col-sm-10', 'col-sm-12']
+    normalGridClass = 'col-sm-5'
+    hiddenSidebarGridClass = 'col-sm-6'
+    hiddenContentGridClass = 'col-sm-10'
+    hiddenAllGridClass     = 'col-sm-12'
+
+    sidebarIsVisible = $sidebarContainer.is(':visible')
+    editorIsVisible  = $editorContainer.is(':visible')
+    previewIsVisible = $previewContainer.is(':visible')
+
+    if sidebarIsVisible
+      if previewIsVisible and editorIsVisible
+        addingGridClass = normalGridClass
+      else
+        addingGridClass = hiddenContentGridClass
+
+    else
+      if previewIsVisible and editorIsVisible
+        addingGridClass = hiddenSidebarGridClass
+      else
+        addingGridClass = hiddenAllGridClass
+
+    changeClass(gridClasses.join(" "), addingGridClass)
+
+  toggleDirectory = ->
+    $sidebar = $('#sidebar')
+    if $(this).is(':checked') then $sidebar.show() else $sidebar.hide()
+
+    resizeLayout()
+
+  toggleContent = ($this, $container, $button) ->
+    if $this.is(':checked')
+      $container.show()
+      $button.removeAttr('disabled')
+    else
+      $container.hide()
+      $button.attr('disabled', 'disabled')
+
+    resizeLayout()
+
   #
   #
   # hmd
@@ -200,18 +249,17 @@ shelf.fadeOutCurrentMessage = ->
     checkChanged(true)
 
   togglePrivate = (isPrivate) ->
-    $privateRadiobox = $("#writing_private_flag_1")
-    $publicRadiobox  = $("#writing_private_flag_0")
+    $privateCheckbox = $("#writing_private_flag")
 
     if isPrivate
-      $privateRadiobox.prop('checked', true).closest('label').addClass('active')
-      $publicRadiobox.prop('checked', false).closest('label').removeClass('active')
+      if !$privateCheckbox.is(':checked')
+        $privateCheckbox.closest('.btn').click()
     else
-      $privateRadiobox.prop('checked', false).closest('label').removeClass('active')
-      $publicRadiobox.prop('checked',   true).closest('label').addClass('active')
+      if $privateCheckbox.is(':checked')
+        $privateCheckbox.closest('.btn').click()
 
   getPrivate = ->
-    $('input[name="writing_private_flag"]:checked').val() == "1"
+    $('#writing_private_flag').is(':checked')
 
 
   #
@@ -236,10 +284,14 @@ shelf.fadeOutCurrentMessage = ->
 
     $('#modal-edit-writing #btn-done').click(updateTitleAndCategory)
 
+    $('#writing_private_flag').change(changePrivate)
+    $('#toggle_directory').change(toggleDirectory)
+    $('#toggle_editor').change ->
+      toggleContent($(this), $('#editor'), $('#toggle_preview').closest('.btn'))
+    $('#toggle_preview').change ->
+      toggleContent($(this), $('#preview'), $('#toggle_editor').closest('.btn'))
+
     $('.default-tooltip').tooltip()
-    $('.btn-private').button().click ->
-      if !$(this).is('.active')
-        changePrivate()
 
     shelf.fadeOutCurrentMessage()
 

@@ -1,20 +1,12 @@
 .menu
   = icon_link_to 'plus', "#", id: "new_writing_button",  class: 'btn btn-sm btn-default default-tooltip', :"data-toggle" => 'tooltip', title: "New writing"
   = icon_link_to 'save', "#", id: "save_writing_button", class: 'btn btn-sm btn-default default-tooltip', :"data-toggle" => 'tooltip', title: "Save writing"
-
-  .btn-group{"data-toggle" => "buttons"}
-    %label.btn.btn-sm.btn-default.btn-private{class: @writing.try(:private) || true ? 'active' : ''}
-      = radio_button_tag 'writing_private_flag', '1', @writing.try(:private) || true
-      Private
-    %label.btn.btn-sm.btn-default.btn-private{class: !(@writing.try(:private) || true) ? 'active' : ''}
-      = radio_button_tag 'writing_private_flag', '0', @writing.try(:private) || false
-      Public
-
+  = check_box_button 'writing_private_flag', '', true, glyphicon_icon('eye-close'), class: 'btn btn-sm btn-default', tooltip: true, title: "Set private/public"
 
   ||
   = link_to image_tag("icons/folder-add.png", class: 'button-icon').html_safe, "#", id: "new_category_button", class: 'btn btn-sm btn-default default-tooltip', :"data-toggle" => 'tooltip', title: "New category"
 
   ||
-  = check_box_button 'toggle_directory', '', true, glyphicon_icon('list-alt'),      class: 'btn btn-sm btn-default', tooltip: true, title: "Show/hide directory"
-  = check_box_button 'toggle_editor',    '', true, glyphicon_icon('pencil'),        class: 'btn btn-sm btn-default', tooltip: true, title: "Show/hide directory"
-  = check_box_button 'toggle_preview',   '', true, glyphicon_icon('align-justify'), class: 'btn btn-sm btn-default', tooltip: true, title: "Show/hide directory"
+  = check_box_button 'toggle_directory', '', true, glyphicon_icon('list-alt'),      class: 'btn btn-sm btn-default', tooltip: true, title: "Show/Hide directory"
+  = check_box_button 'toggle_editor',    '', true, glyphicon_icon('pencil'),        class: 'btn btn-sm btn-default', tooltip: true, title: "Show/Hide directory"
+  = check_box_button 'toggle_preview',   '', true, glyphicon_icon('align-justify'), class: 'btn btn-sm btn-default', tooltip: true, title: "Show/Hide directory"

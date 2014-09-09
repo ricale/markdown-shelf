@@ -122,9 +122,13 @@ window.shelf = (->
 
   requestShowWriting = (event) ->
     event.preventDefault()
-    return false if !confirmToNotSave()
+    $this = $(this)
 
-    History.pushState({state: STATE.SHOW}, "Markdown-shelf", $(this).data('href'));
+    if $("#data_writing_id").val() != $this.data('href').slice('/writings/'.length)
+      return false if !confirmToNotSave()
+
+      showLoadingState();
+      History.pushState({state: STATE.SHOW}, "Markdown-shelf", $this.data('href'));
 
   responseShowWriting = (data) ->
     $('#source').val(data.content)
@@ -140,6 +144,8 @@ window.shelf = (->
     togglePrivate(data.private)
 
     writingIsSaved();
+    showSuccessMessage("Writing was successfully loaded.")
+    hideLoadingState();
 
   saveWriting = (event) ->
     event.preventDefault()
@@ -158,7 +164,7 @@ window.shelf = (->
       url = "/writings/" + writingId
       type = "PUT"
 
-    $.ajax
+    $.ajax(
       url: url
       type: type
       data:
@@ -168,6 +174,10 @@ window.shelf = (->
           content: content
           private: isPrivate
       dataType: "script"
+    ).done ->
+      hideLoadingState()
+
+    showLoadingState();
 
 
 
@@ -235,6 +245,17 @@ window.shelf = (->
 
   #
   #
+  # loading
+
+  showLoadingState = ->
+    $('#loading').show()
+    showInfoMessage('Please wait.....')
+
+  hideLoadingState = ->
+    $('#loading').hide()
+
+  #
+  #
   # etc
 
   checkChanged = (changed) ->
@@ -259,6 +280,17 @@ window.shelf = (->
   writingIsSaved = (event) ->
     checkChanged(false)
     $('#source').bind('input propertychange', onChangeSource)
+
+
+  showInfoMessage = (message) ->
+    showMessage(message, 'info')
+  showErrorMessage = (message) ->
+    showMessage(message, 'alert')
+  showSuccessMessage = (message) ->
+    showMessage(message, 'success')
+
+  showMessage = (message, style) ->
+    $('#message').html("<div class='alert-custom text-"+style+" alert-floating'>"+message+"</div>")
 
   fadeOutCurrentMessage = ->
       $('.message .alert-custom').each ->

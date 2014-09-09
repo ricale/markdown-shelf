@@ -1,4 +1,5 @@
 #save-light.light &nbsp;
 %h1#writing_title.current_writing_title.text-ellipsis.display_inline= @writing.try(:title) || "Untitled Document"
-- if !current_user.nil? && current_user.id == @writing.try(:user_id)
-  #writing_category.current_writing_category_name.text-ellipsis.display_inline= @writing.try(:category_name) || "Not Categorized"
+#writing_category.current_writing_category_name.text-ellipsis.display_inline
+  -if !current_user.nil? && current_user.id == @writing.try(:user_id)
+    = @writing.try(:category_name) || "Not Categorized"

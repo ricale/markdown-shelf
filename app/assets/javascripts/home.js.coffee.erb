@@ -4,8 +4,7 @@
 
 #= require application
 #= require jquery.history
-#= require hmd/hmd
-#= require hmd/hmd.ricaleinline
+#= require hmd/dist/hmd-0.2.8.1
 
 <% environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
 
@@ -35,6 +34,7 @@ window.shelf = (->
       $source.css("height", boxHeight)
       $target.css("height", boxHeight)
 
+    if $list.exists()
       listHeight = $(window).height() - $list.offset().top - 15
       $list.css("height", listHeight)
 
@@ -94,7 +94,7 @@ window.shelf = (->
   # hmd
 
   runHmd = ->
-    hmd.run "#source", "#target"
+    hmd.run $("#source")[0], $("#target")[0]
 
   #
   #
